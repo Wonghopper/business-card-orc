@@ -3,9 +3,9 @@
  * program takes the text of a business card as an input and outputs the name, 
  * phone number, and email address of the owner of the business card.
  * Date Created: 9/21/19
- * Last Updated: 9/21/19
- * Last Update: 
- * TODO: Add name parser
+ * Last Updated: 9/23/19
+ * Last Update: Added name parser based on email
+ * TODO: Add dictionary of names to compare possible name values too
  */
 
 import java.util.regex.Matcher;
@@ -29,13 +29,47 @@ class Contact implements ContactInfo {
     String emailAddress = "Default Email";
 
     Contact(String document) {
-        name = "Constructor Name";
+        name = parseName(document);
         phoneNumber = parseNumber(document);
         emailAddress = parseEmail(document);
     }
 
     public String parseName(String text) {
-        return "TODO";
+        // Get the local-part of the email address
+        String email = parseEmail(text);
+        String localEmail = email.substring(0, email.indexOf('@'));
+
+        // Get possible names using regex
+        // Create regex to pattern match names
+        String regex = "[A-Za-z]+[,\\.\\|]?[ \\t]?[A-Za-z]+"
+                     + "[,\\.\\|]?[ \\t]?[A-Za-z]*";
+        Pattern pattern = Pattern.compile(regex);
+
+        // Create matcher object
+        Matcher matcher = pattern.matcher(text);
+        // Store possible names
+        ArrayList<String> possNames = new ArrayList<String>(1);
+        while (matcher.find()) {
+            possNames.add(matcher.group(0));
+        }
+
+        // Cross compare possible names with the local-part of the email address
+        for (int i = 0; i < possNames.size(); i ++) {
+            for (int j = 0; j < (localEmail.length() - 3); j ++) {
+                /* Checks:
+                 * 1. Possible name is not local part of email address
+                 * 2. Possible name contains substring from local part of email 
+                 *    address at least 3 characters long
+                 */
+                if (!possNames.get(i).equals(localEmail) 
+                    && possNames.get(i)
+                        .contains(localEmail.substring(j, j + 3))) {
+                    return possNames.get(i);
+                }
+            }
+        }
+        // If email does not align with possible names, assume first name
+        return possNames.get(0);
     }
 
     public String getName() {
@@ -108,7 +142,6 @@ class Contact implements ContactInfo {
     }
 
     public String parseEmail(String text) {
-        //Can't parse comments i.e. "(.*)" with regex, need operational symmantics
         // Create regex to pattern match emails
         String regex = "[A-Za-z\\d](\\.?[A-Za-z\\d\\-_])*" 
                      + "@[A-Za-z\\d](\\.?[A-Za-z\\d\\-]+)*";
