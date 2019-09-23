@@ -9,6 +9,14 @@ following information:
 
 ### Name
 
+This tool makes the assumption that the name on the business card is in the 
+format of two or three strings of characters, delimitered by spaces, tabs, 
+periods, or commas. All strings that are of of this format are stored. The tool 
+also assumes that because the email is on a business card, the local-part of the
+email will contain part of the business card's owner's name. Under this 
+assumption, the potential names are compared to the email on the business card 
+and the potential name which contains a substring contained in the local-part of
+the email is returned as the name of the business card owner.
 
 ### Phone Number
 
@@ -16,7 +24,7 @@ This tool assumes that the phone number on the business card uses the North
 American Numbering Plan (NANP). The formatting convention for this numbering 
 plan is XXX-XXX-XXXX, prefixed by the country code 1. The two alphabetic strings
 that appear before the number are also parsed. These strings are used in the 
-case that the business card contains multiple strings that match the format of a 
+case that the business card contains multiple strings that match the format of a
 phone number. It is assumed that if there are multiple numbers, the telephone 
 will be labeled with some "telephone".
 
