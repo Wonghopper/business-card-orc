@@ -3,8 +3,8 @@
  * program takes the text of a business card as an input and outputs the name, 
  * phone number, and email address of the owner of the business card.
  * Date Created: 9/21/19
- * Last Updated: 9/23/19
- * Last Update: Added name dictionary to name parser
+ * Last Updated: 9/24/19
+ * Last Update: Bug fixing in case where nothing matchs name regex
  * TODO: Testing
  */
 
@@ -27,9 +27,9 @@ interface ContactInfo {
  * the business card text for information.
  */
 class Contact implements ContactInfo {
-    String name = "Default Name";
-    String phoneNumber = "Default Number";
-    String emailAddress = "Default Email";
+    String name;
+    String phoneNumber;
+    String emailAddress;
 
     Contact(String document) {
         name = parseName(document);
@@ -58,7 +58,10 @@ class Contact implements ContactInfo {
         /* Store first name found in case no potential name is in the name 
          * dictionary
          */
-        String possNames1 = possNames.get(0);
+        String possNames1 = "No Name Found";
+        if (possNames.size() > 0) {
+            possNames1 = possNames.get(0);
+        }
 
         /* Create array of booleans to track which potential name is found in 
          * the name dictionary
