@@ -4,13 +4,16 @@
  * phone number, and email address of the owner of the business card.
  * Date Created: 9/21/19
  * Last Updated: 9/23/19
- * Last Update: Added name parser based on email
- * TODO: Add dictionary of names to compare possible name values too
+ * Last Update: Added name dictionary to name parser
+ * TODO: Testing
  */
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
 
 interface ContactInfo {
     String getName();
@@ -35,41 +38,104 @@ class Contact implements ContactInfo {
     }
 
     public String parseName(String text) {
-        // Get the local-part of the email address
-        String email = parseEmail(text);
-        String localEmail = email.substring(0, email.indexOf('@'));
-
         // Get possible names using regex
         // Create regex to pattern match names
-        String regex = "[A-Za-z]+[,\\.\\|]?[ \\t]?[A-Za-z]+"
-                     + "[,\\.\\|]?[ \\t]?[A-Za-z]*";
+        String regex = "([A-Za-z])+[,\\.]?[ \\t]?([A-Za-z])+"
+                     + "[,\\.]?[ \\t]?([A-Za-z])*";
         Pattern pattern = Pattern.compile(regex);
 
         // Create matcher object
         Matcher matcher = pattern.matcher(text);
-        // Store possible names
+        /* Store possible names
+         * First element of each array is entire potential name
+         * Second, third, fourth elements are first, second, third strings in 
+         * potential names
+         */
         ArrayList<String> possNames = new ArrayList<String>(1);
         while (matcher.find()) {
             possNames.add(matcher.group(0));
         }
+        /* Store first name found in case no potential name is in the name 
+         * dictionary
+         */
+        String possNames1 = possNames.get(0);
 
-        // Cross compare possible names with the local-part of the email address
-        for (int i = 0; i < possNames.size(); i ++) {
-            for (int j = 0; j < (localEmail.length() - 3); j ++) {
-                /* Checks:
-                 * 1. Possible name is not local part of email address
-                 * 2. Possible name contains substring from local part of email 
-                 *    address at least 3 characters long
-                 */
-                if (!possNames.get(i).equals(localEmail) 
-                    && possNames.get(i)
-                        .contains(localEmail.substring(j, j + 3))) {
-                    return possNames.get(i);
+        /* Create array of booleans to track which potential name is found in 
+         * the name dictionary
+         */
+        boolean[] dicNames = new boolean[possNames.size()];
+        for (int i = 0; i < dicNames.length; i ++) {
+            dicNames[i] = false;
+        }
+
+        // Create file and scanner object to read the names dictionary file
+        File file = new File("names_dic.txt");
+        try {
+            Scanner scanner  = new Scanner(file);
+
+            /* For every name in the dictionary, if that name is in the list 
+             * potential names, mark the corresponding boolean in the array 
+             * dicNames
+             */
+            while (scanner.hasNextLine()) {
+                String dicName = scanner.nextLine();
+                for (int i = 0; i < dicNames.length; i ++) {
+                    if (possNames.get(i).contains(dicName)) {
+                        dicNames[i] = true;
+                    }
                 }
             }
+        } catch(Exception e) {
+            System.out.println("ERROR: File Not Found");
         }
-        // If email does not align with possible names, assume first name
-        return possNames.get(0);
+
+        /* Removes potential names if they were not contained in the name 
+         * dictionary
+         */
+        for (int i = possNames.size() - 1; i > 0; i --) {
+            if (!dicNames[i]) {
+                possNames.remove(i);
+            }
+        }
+
+        // Return only potential name remaining
+        if (possNames.size() == 1) {
+            return possNames.get(0);
+        }
+        /* If multiple potential names are found in dictionary, assume the 
+         * local-part of email address contains part of the name
+         */
+        else if (possNames.size() > 1) {
+            // Get the local-part of the email address
+            String email = parseEmail(text);
+            String localEmail = email.substring(0, email.indexOf('@'));
+
+            /* Cross compare possible names with the local-part of the email 
+             * address
+             */
+            for (int i = 0; i < possNames.size(); i ++) {
+                for (int j = 0; j < (localEmail.length() - 3); j ++) {
+                    /* Checks:
+                     * 1. Possible name is not local part of email address
+                     * 2. Possible name contains substring from local part of 
+                     *    email address at least 3 characters long
+                     */
+                    if (!possNames.get(i).equals(localEmail) 
+                        && possNames.get(i)
+                        .contains(localEmail.substring(j, j + 3))) {
+                        return possNames.get(i);
+                    }
+                }
+            }
+            // If email does not align with possible names, assume first name
+            return possNames.get(0);
+        }
+        else {
+            /* Case where no potential name is in dictionary, returns first 
+             * possible name parsered
+             */
+            return possNames1;
+        }
     }
 
     public String getName() {
