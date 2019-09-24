@@ -12,11 +12,21 @@ following information:
 This tool makes the assumption that the name on the business card is in the 
 format of two or three strings of characters, delimitered by spaces, tabs, 
 periods, or commas. All strings that are of of this format are stored. The tool 
-also assumes that because the email is on a business card, the local-part of the
-email will contain part of the business card's owner's name. Under this 
-assumption, the potential names are compared to the email on the business card 
-and the potential name which contains a substring contained in the local-part of
-the email is returned as the name of the business card owner.
+then uses a dictionary of names to narrow down the list of potential names. In 
+the case where that is not enough, the tool also assumes that because the email 
+is on a business card, the local-part of the email will contain part of the 
+business card's owner's name. Under this assumption, the potential names are 
+compared to the email on the business card and the potential name which contains
+a substring contained in the local-part of the email is returned as the name of 
+the business card owner.
+
+Note that name prefixes and suffixes are not currently covered by the parser. 
+Neither are names longer than 3 strings or names containing symbols. 
+
+There is a known bug in the case where the name is less than 3 strings long and 
+is followed by another character string that is delimited with a comma, period, 
+space, or tab. In this case the following string is returned as part of the 
+name.
 
 ### Phone Number
 
