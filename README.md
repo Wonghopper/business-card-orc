@@ -24,9 +24,9 @@ Note that name prefixes and suffixes are not currently covered by the parser.
 Neither are names longer than 3 strings or names containing symbols. 
 
 There is a known bug in the case where the name is less than 3 strings long and 
-is followed by another character string that is delimited with a comma, period, 
-space, or tab. In this case the following string is returned as part of the 
-name.
+is followed by or is following another character string that is delimited with a
+comma, period, space, or tab. In this case the non-name string is returned as 
+part of the name.
 
 ### Phone Number
 
