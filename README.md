@@ -4,8 +4,8 @@ This repository contains the code and test data for the Asymmetrik Business Card
 OCR coding challenge. The challenge was to create a command line tool that 
 parsed the text of a business card.
 
-The text is parsed through the use of three regular expressions to retrieve the 
-following information:
+The text is parsed with regular expressions to retrieve the following 
+information:
 
 ### Name
 
@@ -20,13 +20,17 @@ compared to the email on the business card and the potential name which contains
 a substring contained in the local-part of the email is returned as the name of 
 the business card owner.
 
+In the case no string is found in the business card text that matchs the name 
+regex, the default value of "No Name Found" is returned.
+
 Note that name prefixes and suffixes are not currently covered by the parser. 
 Neither are names longer than 3 strings or names containing symbols. 
 
 There is a known bug in the case where the name is less than 3 strings long and 
 is followed by or is following another character string that is delimited with a
 comma, period, space, or tab. In this case the non-name string is returned as 
-part of the name.
+part of the name. If I could find a database of last/sur names, the database 
+could be used to eliminate non relevant strings from the names string.
 
 ### Phone Number
 
@@ -37,6 +41,10 @@ that appear before the number are also parsed. These strings are used in the
 case that the business card contains multiple strings that match the format of a
 phone number. It is assumed that if there are multiple numbers, the telephone 
 will be labeled with some "telephone".
+
+In the case no string is found in the business card text that matchs the 
+telephone number regex, the default value of "No Phone Number Found" is 
+returned.
 
 There are numerous other formatting conventions for phone numbers, including 
 varying number of total digits. Expanding the tool to cover these other national
@@ -51,6 +59,9 @@ periods. The string must begin with with an alphanumeric character, and not end
 with a period, or have two periods consecutively. The domain name is a string 
 starting and ending with an alphanumeric character, and contains alphanumeric 
 characters, hypens, and periods, again not have two periods consecutively.
+
+In the case no string is found in the business card text that matchs the email 
+regex, the default value of "No Email Found" is returned.
 
 The assumed, simplified version of an email address was chosen based on the 
 formatting used by common email providers. Further expansion of the tool would 
