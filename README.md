@@ -48,7 +48,26 @@ require a more complex regular expression or to use a different matching system,
 such as a lexer and parser to match formats that can not be matched by a regular
 expression (i.e. email address comments).
 
+## Files
+
+### business_card_parser.java
+
+Java file containing the source code for the business card parser tool.
+
+### names_dic.txt
+
+Text file containing given names in the population of U.S. births where the 
+individual has a Social Security Number between the years 1950 and 2018. This 
+file is used to check potential names against a list of known names. Data 
+gathered from the [Social Security Administration](https://www.ssa.gov/oact/babynames/limits.html).
+
+### test_data
+
+Folder containing text files of sample business card information used to test 
+parser.
+
 ## Usage
+
 Requires the Java Runtime Environment and Java Development Kit to compile and 
 run the program.
 To install the Java Runtime Environment
