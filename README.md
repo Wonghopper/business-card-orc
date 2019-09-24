@@ -109,3 +109,7 @@ Driver executable
 ```bash
 java Driver "$(< Business_Card_Text)"
 ```
+or pass the business card text as a string arguement directly
+```bash
+java Driver "Business_Card_Text"
+```
